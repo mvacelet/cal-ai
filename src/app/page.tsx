@@ -4,6 +4,7 @@
 // IMPORTS & DEPENDENCIES
 // ============================================================================
 import { useState } from 'react';
+import Image from 'next/image';
 import {
   Chart as ChartJS,
   ArcElement,
@@ -35,6 +36,21 @@ interface MealEntry {
   carbs: number;
   fat: number;
   timestamp: Date;
+}
+
+interface BarcodeProduct {
+  product_name: string;
+  nutriments: {
+    'energy-kcal_100g'?: number;
+    'fat_100g'?: number;
+    'sugars_100g'?: number;
+    'proteins_100g'?: number;
+  };
+}
+
+interface ChartContext {
+  label?: string;
+  parsed: number;
 }
 
 // ============================================================================
@@ -172,7 +188,7 @@ function NutritionPieChart({ nutritionData }: { nutritionData: NutritionData }) 
       },
       tooltip: {
         callbacks: {
-          label: function(context: any) {
+          label: function(context: ChartContext) {
             const label = context.label || '';
             const value = context.parsed;
             return `${label}: ${value}g`;
@@ -215,8 +231,7 @@ export default function Home() {
 
   // Barcode lookup states
   const [barcode, setBarcode] = useState('');
-  //const [barcodeData, setBarcodeData] = useState<any>(null);
-  const [barcodeData, setBarcodeData] = useState(null);
+  const [barcodeData, setBarcodeData] = useState<BarcodeProduct | null>(null);
   const [barcodeError, setBarcodeError] = useState('');
 
   // Meal tracking states
@@ -258,9 +273,9 @@ export default function Home() {
       if (!res.ok) throw new Error(data.error || 'Unknown error');
     
       setResult(data.result);
-    } catch (err: any) {
-      console.error('Upload failed:', err.message);
-      setResult(`⚠️ Error: ${err.message}`);
+    } catch (err: unknown) {
+      console.error('Upload failed:', err instanceof Error ? err.message : 'Unknown error');
+      setResult(`⚠️ Error: ${err instanceof Error ? err.message : 'Unknown error'}`);
     } finally {
       setIsLoading(false);
     }
@@ -290,8 +305,8 @@ export default function Home() {
       
       if (data.status !== 1) throw new Error('Product not found');
       setBarcodeData(data.product);
-    } catch (err: any) {
-      setBarcodeError(err.message);
+    } catch (err: unknown) {
+      setBarcodeError(err instanceof Error ? err.message : 'Unknown error');
     }
   }
 
@@ -367,9 +382,9 @@ export default function Home() {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Unknown error');
         setResult(data.result);
-      } catch (err: any) {
-        console.error('Analysis failed:', err.message);
-        setResult(`⚠️ Error: ${err.message}`);
+      } catch (err: unknown) {
+        console.error('Analysis failed:', err instanceof Error ? err.message : 'Unknown error');
+        setResult(`⚠️ Error: ${err instanceof Error ? err.message : 'Unknown error'}`);
       } finally {
         setIsLoading(false);
       }
@@ -600,7 +615,14 @@ export default function Home() {
           {/* Image Preview */}
           {image && (
             <div className="text-center mb-6">
-              <img src={image} alt="Meal preview" className="max-w-md mx-auto rounded-lg shadow-lg" />
+              <Image 
+                src={image} 
+                alt="Meal preview" 
+                width={400}
+                height={300}
+                className="max-w-md mx-auto rounded-lg shadow-lg"
+                style={{ objectFit: 'contain' }}
+              />
             </div>
           )}
 
