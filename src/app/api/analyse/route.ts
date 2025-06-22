@@ -69,7 +69,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ result: content }); 
     */ 
 
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Server error:', err);
     return NextResponse.json({ error: 'Failed to analyse image' }, { status: 500 });
   }

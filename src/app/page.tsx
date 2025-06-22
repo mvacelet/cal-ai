@@ -57,7 +57,8 @@ function parseNutritionResult(result: string): NutritionData {
   };
 
   let tipFound = false;
-  let tipLines: string[] = [];
+  //let tipLines: string[] = [];
+  const tipLines: string[] = [];
 
   for (const line of lines) {
     const trimmedLine = line.trim();
@@ -214,7 +215,8 @@ export default function Home() {
 
   // Barcode lookup states
   const [barcode, setBarcode] = useState('');
-  const [barcodeData, setBarcodeData] = useState<any>(null);
+  //const [barcodeData, setBarcodeData] = useState<any>(null);
+  const [barcodeData, setBarcodeData] = useState(null);
   const [barcodeError, setBarcodeError] = useState('');
 
   // Meal tracking states
