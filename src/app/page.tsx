@@ -418,7 +418,7 @@ export default function Home() {
         {todaysMeals.length > 0 && (
           <div className="bg-white rounded-2xl shadow-xl p-6 mb-8">
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-              📊 Today's Meals ({todaysMeals.length})
+              📊 Today&apos;s Meals ({todaysMeals.length})
             </h2>
             
             {/* Daily Totals */}
